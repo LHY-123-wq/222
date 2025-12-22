@@ -1,3 +1,23 @@
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
+
+# ========== 解决Matplotlib中文乱码核心配置 ==========
+def setup_chinese_font():
+    # 方案1：优先使用上传到项目的中文字体文件（推荐，稳定）
+    font_file = "SourceHanSansCN-Regular.otf"  # 思源黑体文件（需上传到GitHub）
+    if os.path.exists(font_file):
+        # 加载本地字体
+        font_prop = fm.FontProperties(fname=font_file)
+        plt.rcParams["font.family"] = font_prop.get_name()
+    else:
+        # 方案2：云端备用兼容字体（防止字体文件缺失）
+        plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei', 'WenQuanYi Micro Hei']
+    # 解决负号显示为方块的问题
+    plt.rcParams['axes.unicode_minus'] = False
+
+# 执行字体配置（只需运行一次）
+setup_chinese_font()
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
