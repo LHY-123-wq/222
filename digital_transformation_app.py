@@ -1,23 +1,38 @@
+import streamlit as st
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import os
 
-# ========== 解决Matplotlib中文乱码核心配置 ==========
+# 1. 中文乱码修复核心
 def setup_chinese_font():
-    # 方案1：优先使用上传到项目的中文字体文件（推荐，稳定）
-    font_file = "SourceHanSansCN-Regular.otf"  # 思源黑体文件（需上传到GitHub）
+    font_file = "SourceHanSansCN-Regular.otf"
     if os.path.exists(font_file):
-        # 加载本地字体
         font_prop = fm.FontProperties(fname=font_file)
         plt.rcParams["font.family"] = font_prop.get_name()
     else:
-        # 方案2：云端备用兼容字体（防止字体文件缺失）
-        plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei', 'WenQuanYi Micro Hei']
-    # 解决负号显示为方块的问题
+        plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei']
     plt.rcParams['axes.unicode_minus'] = False
 
-# 执行字体配置（只需运行一次）
 setup_chinese_font()
+
+# 2. 读取数据
+try:
+    df = pd.read_excel("transformation_data.xlsx")  # 替换为你的文件名
+    st.success("数据读取成功！")
+except FileNotFoundError:
+    st.error("文件未找到，请检查是否上传到GitHub")
+    st.stop()
+
+# 3. 绘制中文图表
+st.subheader("数字化转型指数分析")
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.bar(df["年份"], df["转型指数"], alpha=0.8, color="#2196F3")
+ax.set_xlabel("统计年份")
+ax.set_ylabel("数字化转型指数")
+ax.set_title("2010-2023年数字化转型指数变化")
+ax.tick_params(axis='x', rotation=45)  # 旋转x轴标签，避免重叠
+st.pyplot(fig)
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
